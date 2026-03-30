@@ -16,7 +16,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatCurrency } from "@/lib/finance-data";
+import type { Transaction } from "@/lib/finance-data";
+import { formatCurrency, transactionBalanceDelta } from "@/lib/finance-data";
+import { useAccounts } from "@/contexts/accounts-context";
 import { useTransactions } from "@/contexts/transactions-context";
 import {
   ArrowUpRight,
@@ -36,15 +38,33 @@ const categoryColors: Record<string, string> = {
   Saúde: "bg-chart-5/20 text-chart-5 border-chart-5/30",
 };
 
+function resolveAccountId(
+  t: Transaction,
+  accounts: { id: string; name: string }[],
+): string | undefined {
+  if (t.accountId) return t.accountId;
+  return accounts.find((a) => a.name === t.account)?.id;
+}
+
 export function TransactionTable() {
-  const { transactions, transactionsReady, removeTransaction } = useTransactions();
+  const { transactions, transactionsReady, removeTransaction } =
+    useTransactions();
+  const { accounts, incrementAccountBalance } = useAccounts();
+
+  function handleRemove(transaction: Transaction) {
+    const id = resolveAccountId(transaction, accounts);
+    if (id) {
+      incrementAccountBalance(id, -transactionBalanceDelta(transaction));
+    }
+    removeTransaction(transaction.id);
+  }
   const sorted = [...transactions].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 
   return (
     <div className="rounded-lg border border-border bg-card">
-      <Table>
+      <Table className="min-w-[640px]">
         <TableHeader>
           <TableRow className="border-border hover:bg-transparent">
             <TableHead className="text-muted-foreground">Descrição</TableHead>
@@ -144,7 +164,7 @@ export function TransactionTable() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-destructive"
-                      onClick={() => removeTransaction(transaction.id)}
+                      onClick={() => handleRemove(transaction)}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Excluir

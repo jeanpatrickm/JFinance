@@ -6,6 +6,8 @@ export interface Transaction {
   category: string
   date: string
   account: string
+  /** Quando presente, o saldo da conta é ajustado ao criar/remover a transação. */
+  accountId?: string
 }
 
 export interface Account {
@@ -23,6 +25,11 @@ export const ACCOUNT_COLOR_CYCLE = [
   "hsl(var(--chart-4))",
   "hsl(var(--chart-5))",
 ] as const
+
+/** Bancos disponíveis ao cadastrar uma conta (nome exibido e armazenado em `Account.name`). */
+export const BANK_OPTIONS = ["Itaú", "Nubank"] as const
+
+export type BankOption = (typeof BANK_OPTIONS)[number]
 
 export interface Investment {
   id: string
@@ -151,6 +158,13 @@ export const allocationData = [
   { type: "Ações", value: 5200, percent: 11.4, fill: "var(--color-chart-4)" },
 ]
 
+/** Variação no saldo causada pela transação (receita +, despesa -). */
+export function transactionBalanceDelta(
+  t: Pick<Transaction, "type" | "amount">,
+): number {
+  return t.type === "income" ? t.amount : -t.amount
+}
+
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -214,25 +228,44 @@ export function sumMonthlyExpenses(
     .reduce((acc, t) => acc + t.amount, 0)
 }
 
-/** Últimos 6 meses (incluindo o mês de referência), rótulos curtos PT-BR */
+/** Soma todas as receitas registradas (todos os meses). */
+export function sumTotalIncome(list: Transaction[]): number {
+  return list
+    .filter((t) => t.type === "income")
+    .reduce((acc, t) => acc + t.amount, 0)
+}
+
+/** Soma todas as despesas registradas (todos os meses). */
+export function sumTotalExpenses(list: Transaction[]): number {
+  return list
+    .filter((t) => t.type === "expense")
+    .reduce((acc, t) => acc + t.amount, 0)
+}
+
+/** Variação percentual vs valor anterior (ex.: mês anterior). */
+export function formatPercentVsPrevious(
+  current: number,
+  previous: number,
+): string {
+  if (previous === 0 && current === 0) return "Sem alteração vs período anterior"
+  if (previous === 0) return "Sem base no período anterior para comparar"
+  const p = ((current - previous) / previous) * 100
+  const sign = p > 0 ? "+" : ""
+  return `${sign}${p.toFixed(1)}% vs período anterior`
+}
+
+/** Janeiro a dezembro do ano (padrão: ano atual). Rótulos curtos PT-BR. */
 export function buildMonthlyChartSeries(
   list: Transaction[],
-  referenceDate = new Date(),
+  year = new Date().getFullYear(),
 ): { month: string; income: number; expenses: number }[] {
   const result: { month: string; income: number; expenses: number }[] = []
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(
-      referenceDate.getFullYear(),
-      referenceDate.getMonth() - i,
-      1,
-    )
-    const y = d.getFullYear()
-    const m = d.getMonth()
+  for (let m = 0; m < 12; m++) {
     const month = MONTH_LABELS[m]
     let income = 0
     let expenses = 0
     for (const t of list) {
-      if (!isTransactionInMonth(t, y, m)) continue
+      if (!isTransactionInMonth(t, year, m)) continue
       if (t.type === "income") income += t.amount
       else expenses += t.amount
     }
@@ -258,6 +291,24 @@ export function buildExpenseCategoryData(
   for (const t of list) {
     if (t.type !== "expense") continue
     if (!isTransactionInMonth(t, year, month)) continue
+    map.set(t.category, (map.get(t.category) ?? 0) + t.amount)
+  }
+  return Array.from(map.entries())
+    .map(([category, value], i) => ({
+      category,
+      value,
+      fill: CATEGORY_CHART_FILLS[i % CATEGORY_CHART_FILLS.length],
+    }))
+    .sort((a, b) => b.value - a.value)
+}
+
+/** Despesas por categoria em todos os meses. */
+export function buildExpenseCategoryDataAllTime(
+  list: Transaction[],
+): { category: string; value: number; fill: string }[] {
+  const map = new Map<string, number>()
+  for (const t of list) {
+    if (t.type !== "expense") continue
     map.set(t.category, (map.get(t.category) ?? 0) + t.amount)
   }
   return Array.from(map.entries())

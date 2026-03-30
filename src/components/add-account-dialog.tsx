@@ -12,6 +12,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { BANK_OPTIONS } from "@/lib/finance-data";
 import { useAccounts } from "@/contexts/accounts-context";
 
 interface AddAccountDialogProps {
@@ -31,27 +39,23 @@ export function AddAccountDialog({
   onOpenChange,
 }: AddAccountDialogProps) {
   const { addAccount } = useAccounts();
-  const [name, setName] = useState("");
+  const [bank, setBank] = useState<string>(BANK_OPTIONS[0]);
   const [balance, setBalance] = useState("");
-  const [institution, setInstitution] = useState("");
 
   useEffect(() => {
     if (!open) return;
-    setName("");
+    setBank(BANK_OPTIONS[0]);
     setBalance("");
-    setInstitution("");
   }, [open]);
 
   function handleSave() {
-    const trimmedName = name.trim();
-    if (!trimmedName) return;
+    if (!bank) return;
     const value = parseBalance(balance);
     if (Number.isNaN(value)) return;
 
     addAccount({
-      name: trimmedName,
+      name: bank,
       balance: value,
-      institution: institution.trim() || undefined,
     });
     onOpenChange(false);
   }
@@ -62,25 +66,30 @@ export function AddAccountDialog({
         <DialogHeader>
           <DialogTitle className="text-foreground">Nova Conta</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Adicione uma nova conta para gerenciar suas finanças.
+            Selecione o banco e informe o saldo atual da conta.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="name" className="text-foreground">
-              Nome da Conta
+            <Label htmlFor="bank" className="text-foreground">
+              Banco
             </Label>
-            <Input
-              id="name"
-              placeholder="Ex: Nubank"
-              className="bg-input border-border"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <Select value={bank} onValueChange={setBank}>
+              <SelectTrigger id="bank" className="bg-input border-border">
+                <SelectValue placeholder="Selecione o banco" />
+              </SelectTrigger>
+              <SelectContent>
+                {BANK_OPTIONS.map((b) => (
+                  <SelectItem key={b} value={b}>
+                    {b}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="balance" className="text-foreground">
-              Saldo Inicial
+              Saldo
             </Label>
             <Input
               id="balance"
@@ -92,18 +101,6 @@ export function AddAccountDialog({
               onChange={(e) => setBalance(e.target.value)}
             />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="institution" className="text-foreground">
-              Instituição (opcional)
-            </Label>
-            <Input
-              id="institution"
-              placeholder="Ex: Banco do Brasil"
-              className="bg-input border-border"
-              value={institution}
-              onChange={(e) => setInstitution(e.target.value)}
-            />
-          </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -112,7 +109,7 @@ export function AddAccountDialog({
           <Button
             className="bg-primary text-primary-foreground hover:bg-primary/90"
             onClick={handleSave}
-            disabled={!name.trim() || Number.isNaN(parseBalance(balance))}
+            disabled={!bank || Number.isNaN(parseBalance(balance))}
           >
             Salvar
           </Button>

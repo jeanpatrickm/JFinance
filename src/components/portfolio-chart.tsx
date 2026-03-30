@@ -28,7 +28,7 @@ export function PortfolioChart() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[300px] w-full min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={investmentHistory}>
               <defs>

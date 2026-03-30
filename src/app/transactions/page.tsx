@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SidebarNav } from "@/components/sidebar-nav";
+import { AppShell } from "@/components/app-shell";
 import { TransactionFilters } from "@/components/transaction-filters";
 import { TransactionTable } from "@/components/transaction-table";
 import { AddTransactionDialog } from "@/components/add-transaction-dialog";
@@ -25,25 +25,21 @@ export default function TransactionsPage() {
   const balance = income - expenses;
 
   return (
-    <div className="min-h-screen bg-background">
-      <SidebarNav />
-
-      <main className="ml-64 min-h-screen">
+    <AppShell>
+      <main className="min-h-screen">
         <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between px-6">
-            <div>
-              <h1 className="text-xl font-semibold text-foreground">
-                Transações
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Gerencie suas receitas e despesas
-              </p>
-            </div>
+          <div className="flex min-h-16 flex-col justify-center gap-1 px-4 py-3 sm:px-6">
+            <h1 className="text-lg font-semibold text-foreground sm:text-xl">
+              Transações
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Gerencie suas receitas e despesas
+            </p>
           </div>
         </header>
 
-        <div className="p-6">
-          <div className="mb-6 grid gap-4 md:grid-cols-3">
+        <div className="p-4 sm:p-6">
+          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Card className="bg-card border-border">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -108,6 +104,6 @@ export default function TransactionsPage() {
       </main>
 
       <AddTransactionDialog open={dialogOpen} onOpenChange={setDialogOpen} />
-    </div>
+    </AppShell>
   );
 }

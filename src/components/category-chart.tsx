@@ -15,37 +15,51 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { buildExpenseCategoryData, formatCurrency } from "@/lib/finance-data";
+import {
+  buildExpenseCategoryData,
+  buildExpenseCategoryDataAllTime,
+  formatCurrency,
+} from "@/lib/finance-data";
 import { useTransactions } from "@/contexts/transactions-context";
+import { useDashboardPeriod } from "@/contexts/dashboard-period-context";
 
 export function CategoryChart() {
   const { transactions, transactionsReady } = useTransactions();
-  const now = new Date();
-  const categoryData = buildExpenseCategoryData(
-    transactions,
-    now.getFullYear(),
-    now.getMonth(),
-  );
+  const { period } = useDashboardPeriod();
+
+  const categoryData =
+    period.mode === "all"
+      ? buildExpenseCategoryDataAllTime(transactions)
+      : buildExpenseCategoryData(
+          transactions,
+          period.year,
+          period.month,
+        );
 
   const totalMonthExpenses = categoryData.reduce((acc, d) => acc + d.value, 0);
+
+  const description =
+    period.mode === "all"
+      ? "Todas as despesas por categoria (todos os meses)"
+      : "Distribuição de despesas do mês selecionado";
 
   return (
     <Card className="bg-card border-border">
       <CardHeader>
         <CardTitle className="text-foreground">Gastos por Categoria</CardTitle>
         <CardDescription className="text-muted-foreground">
-          Distribuição de despesas do mês
+          {description}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {!transactionsReady ? (
-          <div className="h-[300px] animate-pulse rounded-lg bg-muted/40" />
+          <div className="h-[300px] w-full min-w-0 animate-pulse rounded-lg bg-muted/40" />
         ) : categoryData.length === 0 ? (
-          <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
-            Nenhuma despesa neste mês.
+          <div className="flex h-[300px] w-full min-w-0 items-center justify-center text-sm text-muted-foreground">
+            Nenhuma despesa neste período.
           </div>
         ) : (
-          <div className="h-[300px]">
+          <div className="h-[300px] w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie

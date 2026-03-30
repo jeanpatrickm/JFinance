@@ -1,36 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { SidebarNav } from "@/components/sidebar-nav";
+import { AppShell } from "@/components/app-shell";
 import { AccountCard } from "@/components/account-card";
 import { AddAccountDialog } from "@/components/add-account-dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { formatCurrency, getTotalBalance } from "@/lib/finance-data";
 import { useAccounts } from "@/contexts/accounts-context";
-import { Plus, Wallet, TrendingUp, CreditCard } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export default function AccountsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { accounts, accountsReady } = useAccounts();
 
-  const totalBalance = getTotalBalance(accounts);
-  const totalPositive = accounts
-    .filter((a) => a.balance > 0)
-    .reduce((acc, a) => acc + a.balance, 0);
-  const totalNegative = accounts
-    .filter((a) => a.balance < 0)
-    .reduce((acc, a) => acc + a.balance, 0);
-
   return (
-    <div className="min-h-screen bg-background">
-      <SidebarNav />
-
-      <main className="ml-64 min-h-screen">
+    <AppShell>
+      <main className="min-h-screen">
         <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between px-6">
-            <div>
-              <h1 className="text-xl font-semibold text-foreground">
+          <div className="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div className="min-w-0">
+              <h1 className="text-lg font-semibold text-foreground sm:text-xl">
                 Minhas Contas
               </h1>
               <p className="text-sm text-muted-foreground">
@@ -39,7 +27,7 @@ export default function AccountsPage() {
             </div>
             <Button
               onClick={() => setDialogOpen(true)}
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-full shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto"
             >
               <Plus className="mr-2 h-4 w-4" />
               Nova Conta
@@ -47,7 +35,7 @@ export default function AccountsPage() {
           </div>
         </header>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {!accountsReady ? (
               <>
@@ -73,6 +61,6 @@ export default function AccountsPage() {
       </main>
 
       <AddAccountDialog open={dialogOpen} onOpenChange={setDialogOpen} />
-    </div>
+    </AppShell>
   );
 }

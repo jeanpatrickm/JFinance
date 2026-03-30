@@ -58,7 +58,6 @@ function persist(next: Account[]) {
 export type NewAccountInput = {
   name: string;
   balance: number;
-  institution?: string;
 };
 
 type AccountsContextValue = {
@@ -67,6 +66,8 @@ type AccountsContextValue = {
   accountsReady: boolean;
   addAccount: (input: NewAccountInput) => void;
   setAccountBalance: (id: string, balance: number) => void;
+  /** Soma delta ao saldo da conta (ex.: impacto de receitas/despesas). */
+  incrementAccountBalance: (id: string, delta: number) => void;
   removeAccount: (id: string) => void;
 };
 
@@ -88,7 +89,6 @@ export function AccountsProvider({ children }: { children: ReactNode }) {
       const id = crypto.randomUUID();
       const color =
         ACCOUNT_COLOR_CYCLE[prev.length % ACCOUNT_COLOR_CYCLE.length];
-      const institution = input.institution?.trim();
       const next: Account[] = [
         ...prev,
         {
@@ -96,7 +96,6 @@ export function AccountsProvider({ children }: { children: ReactNode }) {
           name,
           balance: input.balance,
           color,
-          institution: institution || undefined,
         },
       ];
       persist(next);
@@ -110,6 +109,19 @@ export function AccountsProvider({ children }: { children: ReactNode }) {
       const next = prev.map((a) =>
         a.id === id ? { ...a, balance } : a,
       );
+      persist(next);
+      return next;
+    });
+  }, []);
+
+  const incrementAccountBalance = useCallback((id: string, delta: number) => {
+    if (!Number.isFinite(delta) || delta === 0) return;
+    setAccounts((prev) => {
+      const idx = prev.findIndex((a) => a.id === id);
+      if (idx === -1) return prev;
+      const next = [...prev];
+      const a = next[idx];
+      next[idx] = { ...a, balance: a.balance + delta };
       persist(next);
       return next;
     });
@@ -130,6 +142,7 @@ export function AccountsProvider({ children }: { children: ReactNode }) {
         accountsReady,
         addAccount,
         setAccountBalance,
+        incrementAccountBalance,
         removeAccount,
       }}
     >

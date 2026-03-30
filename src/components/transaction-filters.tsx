@@ -17,17 +17,17 @@ interface TransactionFiltersProps {
 
 export function TransactionFilters({ onAddClick }: TransactionFiltersProps) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-1 gap-3">
-        <div className="relative flex-1 max-w-sm">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <div className="relative min-w-0 flex-1 sm:max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Buscar transações..."
-            className="pl-9 bg-card border-border"
+            className="border-border bg-card pl-9"
           />
         </div>
         <Select defaultValue="all">
-          <SelectTrigger className="w-[140px] bg-card border-border">
+          <SelectTrigger className="w-full border-border bg-card sm:w-[140px]">
             <SelectValue placeholder="Tipo" />
           </SelectTrigger>
           <SelectContent>
@@ -37,7 +37,7 @@ export function TransactionFilters({ onAddClick }: TransactionFiltersProps) {
           </SelectContent>
         </Select>
         <Select defaultValue="all">
-          <SelectTrigger className="w-[160px] bg-card border-border">
+          <SelectTrigger className="w-full border-border bg-card sm:w-[160px]">
             <SelectValue placeholder="Categoria" />
           </SelectTrigger>
           <SelectContent>
@@ -53,14 +53,15 @@ export function TransactionFilters({ onAddClick }: TransactionFiltersProps) {
         <Button
           variant="outline"
           size="icon"
-          className="border-border bg-transparent"
+          className="shrink-0 border-border bg-transparent sm:mt-0"
+          aria-label="Mais filtros"
         >
           <Filter className="h-4 w-4" />
         </Button>
       </div>
       <Button
         onClick={onAddClick}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
+        className="w-full shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 lg:w-auto"
       >
         <Plus className="mr-2 h-4 w-4" />
         Nova Transação

@@ -60,11 +60,6 @@ export function AccountsOverview() {
                     <p className="text-sm font-medium text-foreground">
                       {account.name}
                     </p>
-                    {account.institution ? (
-                      <p className="text-xs text-muted-foreground">
-                        {account.institution}
-                      </p>
-                    ) : null}
                   </div>
                 </div>
                 <p

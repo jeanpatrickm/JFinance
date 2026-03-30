@@ -1,6 +1,6 @@
 "use client";
 
-import { SidebarNav } from "@/components/sidebar-nav";
+import { AppShell } from "@/components/app-shell";
 import {
   Card,
   CardContent,
@@ -24,24 +24,20 @@ import { User, Bell, Shield, Palette, Download, Trash2 } from "lucide-react";
 
 export default function SettingsPage() {
   return (
-    <div className="min-h-screen bg-background">
-      <SidebarNav />
-
-      <main className="ml-64 min-h-screen">
+    <AppShell>
+      <main className="min-h-screen">
         <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between px-6">
-            <div>
-              <h1 className="text-xl font-semibold text-foreground">
-                Configurações
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Personalize sua experiência
-              </p>
-            </div>
+          <div className="flex min-h-16 flex-col justify-center gap-1 px-4 py-3 sm:px-6">
+            <h1 className="text-lg font-semibold text-foreground sm:text-xl">
+              Configurações
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Personalize sua experiência
+            </p>
           </div>
         </header>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="mx-auto max-w-3xl space-y-6">
             {/* Perfil */}
             <Card className="bg-card border-border">
@@ -253,6 +249,6 @@ export default function SettingsPage() {
           </div>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

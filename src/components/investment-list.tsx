@@ -41,8 +41,8 @@ export function InvestmentList({ onAddClick }: InvestmentListProps) {
   return (
     <Card className="bg-card border-border">
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
             <CardTitle className="text-foreground">
               Meus Investimentos
             </CardTitle>
@@ -52,7 +52,7 @@ export function InvestmentList({ onAddClick }: InvestmentListProps) {
           </div>
           <Button
             onClick={onAddClick}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            className="w-full shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto"
           >
             <Plus className="mr-2 h-4 w-4" />
             Novo Investimento
@@ -60,7 +60,7 @@ export function InvestmentList({ onAddClick }: InvestmentListProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
+        <Table className="min-w-[600px]">
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
               <TableHead className="text-muted-foreground">Ativo</TableHead>

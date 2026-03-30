@@ -98,11 +98,6 @@ export function AccountCard({ account }: AccountCardProps) {
             <CardTitle className="text-base font-semibold text-foreground">
               {account.name}
             </CardTitle>
-            {account.institution ? (
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {account.institution}
-              </p>
-            ) : null}
           </div>
         </div>
         <Button

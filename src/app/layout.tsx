@@ -15,6 +15,11 @@ export const metadata: Metadata = {
     "Gerencie suas finanças pessoais, acompanhe gastos, investimentos e muito mais",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

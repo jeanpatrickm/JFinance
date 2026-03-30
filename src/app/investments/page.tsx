@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SidebarNav } from "@/components/sidebar-nav";
+import { AppShell } from "@/components/app-shell";
 import { PortfolioChart } from "@/components/portfolio-chart";
 import { AllocationChart } from "@/components/allocation-chart";
 import { InvestmentList } from "@/components/investment-list";
@@ -25,25 +25,21 @@ export default function InvestmentsPage() {
   ).toFixed(1);
 
   return (
-    <div className="min-h-screen bg-background">
-      <SidebarNav />
-
-      <main className="ml-64 min-h-screen">
+    <AppShell>
+      <main className="min-h-screen">
         <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between px-6">
-            <div>
-              <h1 className="text-xl font-semibold text-foreground">
-                Investimentos
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Acompanhe sua carteira de investimentos
-              </p>
-            </div>
+          <div className="flex min-h-16 flex-col justify-center gap-1 px-4 py-3 sm:px-6">
+            <h1 className="text-lg font-semibold text-foreground sm:text-xl">
+              Investimentos
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Acompanhe sua carteira de investimentos
+            </p>
           </div>
         </header>
 
-        <div className="p-6">
-          <div className="mb-6 grid gap-4 md:grid-cols-4">
+        <div className="p-4 sm:p-6">
+          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <Card className="bg-card border-border">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -118,6 +114,6 @@ export default function InvestmentsPage() {
       </main>
 
       <AddInvestmentDialog open={dialogOpen} onOpenChange={setDialogOpen} />
-    </div>
+    </AppShell>
   );
 }

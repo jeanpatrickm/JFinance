@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { transactionBalanceDelta } from "@/lib/finance-data";
 import { useAccounts } from "@/contexts/accounts-context";
 import { useTransactions } from "@/contexts/transactions-context";
 
@@ -53,7 +54,7 @@ export function AddTransactionDialog({
   onOpenChange,
 }: AddTransactionDialogProps) {
   const { addTransaction } = useTransactions();
-  const { accounts } = useAccounts();
+  const { accounts, incrementAccountBalance } = useAccounts();
   const [type, setType] = useState<"income" | "expense">("expense");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
@@ -104,7 +105,12 @@ export function AddTransactionDialog({
       category,
       date,
       account: account.name,
+      accountId: account.id,
     });
+    incrementAccountBalance(
+      account.id,
+      transactionBalanceDelta({ type, amount: value }),
+    );
     onOpenChange(false);
   }
 
