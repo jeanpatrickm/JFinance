@@ -6,7 +6,6 @@ import { MonthlyChart } from "@/components/monthly-chart";
 import { CategoryChart } from "@/components/category-chart";
 import { RecentTransactions } from "@/components/recent-transactions";
 import { AccountsOverview } from "@/components/accounts-overview";
-import { InvestmentSummary } from "@/components/investment-summary";
 import { AppShell } from "@/components/app-shell";
 import { DashboardPeriodSelector } from "@/components/dashboard-period-selector";
 
@@ -39,10 +38,9 @@ export function DashboardShell() {
               <MonthlyChart />
               <CategoryChart />
             </div>
-            <div className="mt-6 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
               <RecentTransactions />
               <AccountsOverview />
-              {/* <InvestmentSummary /> */}
             </div>
           </div>
         </main>

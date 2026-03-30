@@ -15,7 +15,7 @@ export function AccountsOverview() {
   const { accounts, accountsReady } = useAccounts();
 
   return (
-    <Card className="bg-card border-border">
+    <Card className="h-full bg-card border-border">
       <CardHeader>
         <CardTitle className="text-foreground">Minhas Contas</CardTitle>
         <CardDescription className="text-muted-foreground">

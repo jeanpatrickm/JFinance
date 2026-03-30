@@ -1,12 +1,11 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Wallet, PiggyBank } from "lucide-react";
+import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
 import {
   formatCurrency,
   formatPercentVsPrevious,
   getTotalBalance,
-  getTotalInvestments,
   sumMonthlyExpenses,
   sumMonthlyIncome,
   sumTotalExpenses,
@@ -27,7 +26,6 @@ export function StatsCards() {
   const { period } = useDashboardPeriod();
 
   const totalBalance = getTotalBalance(accounts);
-  const totalInvestments = getTotalInvestments();
 
   const isAll = period.mode === "all";
   const y = period.mode === "month" ? period.year : new Date().getFullYear();
@@ -100,17 +98,10 @@ export function StatsCards() {
       subtitleClass: expenseSubtitleClass,
       waitTransactions: true,
     },
-    //{
-    /* title: "Investimentos",
-      value: formatCurrency(totalInvestments),
-      icon: PiggyBank,
-      subtitle: "Posição atual dos investimentos de exemplo.",
-      subtitleClass: "text-muted-foreground",
-    },*/
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {stats.map((stat) => {
         const valuePending =
           (Boolean(stat.waitTransactions) && !transactionsReady) ||

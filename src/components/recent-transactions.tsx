@@ -33,7 +33,7 @@ export function RecentTransactions() {
       : "Últimas movimentações em qualquer mês";
 
   return (
-    <Card className="bg-card border-border">
+    <Card className="h-full bg-card border-border">
       <CardHeader>
         <CardTitle className="text-foreground">Transações Recentes</CardTitle>
         <CardDescription className="text-muted-foreground">
